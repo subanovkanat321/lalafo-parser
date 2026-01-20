@@ -13,23 +13,26 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class AdMapper {
 
-    private static final DateTimeFormatter FORMATTER =
-        DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT);
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(AppConstants.DATE_FORMAT);
 
     public AdDto toDto(LalafoItem item) {
-        String photo = item.images().isEmpty() ? "" : item.images().get(0).url();
+        String photo = item.images() != null && !item.images().isEmpty()
+            ? item.images().get(0).url()
+            : "";
 
         LocalDateTime dateTime = LocalDateTime.ofInstant(
             Instant.ofEpochSecond(item.createdTime()),
             ZoneId.systemDefault()
         );
 
-        return AdDto.builder()
-            .title(item.title())
-            .price(item.price() + " " + (item.currency() != null ? item.currency() : AppConstants.DEFAULT_CURRENCY))
-            .city(item.city())
-            .imageUrl(photo)
-            .date(dateTime.format(FORMATTER))
-            .build();
+        String priceWithCurrency = item.price() + " " + (item.currency() != null ? item.currency() : AppConstants.DEFAULT_CURRENCY);
+
+        return new AdDto(
+            item.title(),
+            priceWithCurrency,
+            item.city(),
+            photo,
+            dateTime.format(FORMATTER)
+        );
     }
 }
