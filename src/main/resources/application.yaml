@@ -3,3 +3,9 @@ server:
 spring:
   application:
     name: lalafo-service
+
+lalafo:
+  api:
+    base-url: "https://lalafo.kg/api/search/v3/feed"
+    items-per-page: 100
+
